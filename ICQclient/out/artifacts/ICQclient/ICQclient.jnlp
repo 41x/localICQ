@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jnlp spec="1.0" xmlns:jfx="http://javafx.com" href="ICQclient.jnlp">
+  <information>
+    <title>ICQclient</title>
+    <vendor>Unknown</vendor>
+    <description>ICQclient</description>
+    <offline-allowed/>
+  </information>
+  <resources>
+    <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
+    <jar href="ICQclient.jar" size="34821" download="eager" />
+    <jar href="commons-cli-1.1.jar" size="36174" download="eager" />
+    <jar href="commons-io-1.2.jar" size="65621" download="eager" />
+    <jar href="hamcrest-core.jar" size="45024" download="eager" />
+    <jar href="json-20151123.jar" size="48224" download="eager" />
+    <jar href="junit.jar" size="314932" download="eager" />
+    <jar href="rabbitmq-client-tests.jar" size="467034" download="eager" />
+    <jar href="rabbitmq-client.jar" size="418206" download="eager" />
+  </resources>
+  <jfx:javafx-desc  width="600" height="400" main-class="sample.Main"  name="ICQclient" />
+  <update check="background"/>
+</jnlp>
