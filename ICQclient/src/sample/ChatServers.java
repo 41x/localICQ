@@ -50,7 +50,7 @@ public class ChatServers extends ArrayList<Server> {
                 while (true){
                     byte[] recvBuf = new byte[30000];
                     DatagramPacket receivePacket = new DatagramPacket(recvBuf, recvBuf.length);
-                    socket.setSoTimeout(200);
+                    socket.setSoTimeout(300);
                     socket.receive(receivePacket);
                     //We have a response
 //                    log("Got response from: " + receivePacket.getAddress().getHostAddress());

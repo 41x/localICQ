@@ -25,44 +25,44 @@ public class QueueWatcher implements Runnable {
 
     @Override
     public void run() {
+        Connection connection = null;
+        Channel channel = null;
         ConnectionFactory factory = new ConnectionFactory();
         String QUEUE_NAME=login+"queue";
         kill=false;
         log("Starting QueueWarcher...");
         while (!kill){
             //register inbox queue
-//            log("Searching chat servers...");
             ChatServers servers=ChatServers.getInstance();
             if(servers.size()==0){
+                log("No chatServers found!");
+                try {
+                    Thread.sleep(1000);
+                } catch (Exception e) {
+                    log(e.getMessage());
+                }
                 continue;
             }
-//            log("Search completed");
-
-
             //check if my queue already exists
             Server server=servers.findByQueue(QUEUE_NAME);
-            //if not exists for balancing find server with minimum of registered queues and register new queue
-            if(server==null){
+
+            if(server==null)
                 server=servers.findMinQue();
-                boolean res=server.registerUser(login,password);
-                System.out.println(res);
-            }
+            //if not exists for balancing find server with minimum of registered queues and register new queue
+            boolean res=server.registerUser(login,password);
+            System.out.println(res);
 
             factory.setHost(server.getIp().toString().split("/")[1]);
             factory.setUsername(login);
             factory.setPassword(password);
 
-            Connection connection = null;
-            Channel channel = null;
             try {
                 connection = factory.newConnection();
                 channel = connection.createChannel();
                 channel.queueDeclare(QUEUE_NAME, false, false, false, null);
-            } catch (TimeoutException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-                return;
+                continue;
             }
             log("Waiting for messages...");
 
@@ -81,32 +81,33 @@ public class QueueWatcher implements Runnable {
                 }
             };
             try {
-                assert channel != null;
+//                assert channel != null;
                 channel.basicConsume(QUEUE_NAME, true, consumer);
             } catch (IOException e) {
                 e.printStackTrace();
                 log(e.getMessage());
             }
 
-            while (!kill){ // check if server alive
-                try {
-                    channel.queueDeclare(QUEUE_NAME, false, false, false, null);
-                    Thread.sleep(2000);
-//                    System.out.println("meQueue");
-                } catch (Exception e) {
-                    log("Current server died");
-//                    e.printStackTrace();
-                    log(e.getMessage());
+            while (!kill){
+                servers=ChatServers.getInstance();
+                if(servers.size()==0){
                     break;
                 }
+                server=servers.findByQueue(QUEUE_NAME);
+                if(server==null)break;
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
-            if (connection.isOpen())
+        }
+        if (connection!=null && connection.isOpen())
             try {
                 connection.close();
             } catch (Exception e1) {
-                System.out.println(e1.getMessage());
+                log(e1.getMessage());
             }
-        }
     }
 
     public void setKill(boolean kill) {

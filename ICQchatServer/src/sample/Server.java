@@ -32,7 +32,7 @@ public class Server implements Runnable{
                 DatagramPacket packet = new DatagramPacket(recvBuf, recvBuf.length);
                 socket.receive(packet);
                 //Packet received
-                log( "Packet received; data: " + new String(packet.getData()));
+//                log( "Packet received; data: " + new String(packet.getData()));
                 String client=packet.getAddress().getHostAddress();
                 //See if the packet holds the right command (message)
                 String message = new String(packet.getData()).trim();
@@ -40,7 +40,14 @@ public class Server implements Runnable{
                 String answer;
                 switch (parts[0]){
                     case "who":
-                        log("Got discovery request from: "+client);
+                        log("Got queueWatcher request from: "+client);
+                        log("Checking Rabbit...");
+                        // no reply if rabbit is dead
+                        if(!alive("guest","guest")){
+                            log("Rabbit is DEAD!\nPlease start Rabbit");
+                            continue;
+                        }
+                        log("Rabbit running");
                         log("Getting queues info");
                         String jsn=getQueueInfo();
                         answer="ChatServer;"+jsn;
@@ -52,6 +59,10 @@ public class Server implements Runnable{
                         answer=status?"OK":"Server is down";
                         break;
                     case "createRmqUser":
+                        if(!alive("guest","guest")){
+                            log("Rabbit is DEAD!\nPlease start Rabbit");
+                            continue;
+                        }
                         log("Registering new user: "+parts[1]+" with RabbitMQ");
                         boolean registered=createRmqUser(parts[1],parts[2]);
                         answer=registered?"OK":"Something went Wrong (T_T)";

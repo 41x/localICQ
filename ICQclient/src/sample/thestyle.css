@@ -1,18 +1,23 @@
 html{
     //position: absolute;
 }
-
-.contact {
-    border-radius: 10px;
-    background-color: #C1F7BE;
+.user {
+    font-size: 13px;
+    width: 70%;
+    border-radius: 3px;
+    background-color: #ddd;
     padding: 10px;
-    border: 3px solid #73AD21;
+    word-break: break-all;
+    color: black;
 }
 
-.user {
-    border-radius: 10px;
+.contact {
+    margin-left: 20%;
+    font-size: 13px;
+    border-radius: 3px;
     padding: 10px;
-    border: 3px solid #73AD21;
-    background-color: #90C3D4;
-
+    width: 70%;
+    background-color: #08f;
+    color: #fff;
+    word-break: break-all;
 }
